@@ -14,28 +14,25 @@ from pathlib import Path
 import os
 from datetime import timedelta
 from dotenv import load_dotenv
-
-load_dotenv()
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = os.getenv('SECRET_KEY','secret-key')
-DEBUG = os.getenv('DEBUG','True') == 'True'
 
-
+load_dotenv(BASE_DIR / ".env")
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-ld!+z)m#1vir0)2j_)py=%krc-m@5rv2i*5!(=@v1(sgnag3sp'
+SECRET_KEY = 'django-insecure-zwyz37f!jv%-7d*r41xzee5$vlupnm!)men4v=x()hyvoz3i&g'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = []
+APPEND_SLASH = False
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -49,7 +46,26 @@ INSTALLED_APPS = [
     'django_filters',
     'users',
     'catalog',
+ #   'invoices.apps.InvoicesConfig',
+    'warehouses',
+ #   'basics',
 ]
+
+REST_FRAMEWORK = {
+  'DEFAULT_AUTHENTICATION_CLASSES':(
+    'rest_framework_simplejwt.authentication.JWTAuthentication',
+  ),
+  'DEFAULT_PERMISSION_CLASSES':(
+    'rest_framework.permissions.IsAuthenticated',
+  ),
+  'DEFAULT_FILTER_BACKENDS':(
+    'django_filters.rest_framework.DjangoFilterBackend',
+    'rest_framework.filters.SearchFilter',
+    'rest_framework.filters.OrderingFilter',
+  ),
+  'DEFAULT_PAGINATION_CLASS':'rest_framework.pagination.PageNumberPagination',
+  'PAGE_SIZE':10
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -84,16 +100,25 @@ WSGI_APPLICATION = 'billing_api.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-DATABASES={
-  'default':{
-    'ENGINE':'django.db.backends.postgresql',
-    'NAME':os.getenv('DB_NAME','blogdb'),
-    'USER':os.getenv('DB_USER','postgres'),
-    'PASSWORD':os.getenv('DB_PASS','admin'),
-    'HOST':os.getenv('DB_HOST','localhost'),
-    'PORT':os.getenv('DB_PORT','5432')
-  }
+# Usando SQLite temporalmente para evitar problemas de compatibilidad con psycopg2 y Python 3.13
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
 }
+
+# Descomenta esto cuando tengas PostgreSQL configurado correctamente:
+# DATABASES={
+#   'default':{
+#     'ENGINE':'django.db.backends.postgresql',
+#     'NAME':os.getenv('DB_NAME','django'),
+#     'USER':os.getenv('DB_USER','postgres'),
+#     'PASSWORD':os.getenv('DB_PASS','postgres'),
+#     'HOST':os.getenv('DB_HOST','localhost'),
+#     'PORT':os.getenv('DB_PORT','5432')
+#   }
+# }
 
 
 # Password validation
@@ -136,3 +161,8 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+SIMPLE_JWT = {
+  'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
+  'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+}

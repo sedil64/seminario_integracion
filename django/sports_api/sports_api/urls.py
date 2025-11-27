@@ -5,5 +5,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('users.urls')),
     path('api/', include('leagues.urls')),
-    path('api/', include('matches.urls')),  # ahora /api/matches/
+    path('api/', include('matches.urls')),
 ]

@@ -53,13 +53,14 @@ REST_FRAMEWORK = {
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'billing_db',
-        'USER': 'billing_user',
-        'PASSWORD': 'billing_pass_123',
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'NAME': os.getenv('DB_NAME', 'billing_db'),
+        'USER': os.getenv('DB_USER', 'billing_user'),
+        'PASSWORD': os.getenv('DB_PASS', 'billing_pass_123'),
+        'HOST': os.getenv('DB_HOST', 'localhost'),
+        'PORT': os.getenv('DB_PORT', '5432'),
     }
 }
+
 
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),

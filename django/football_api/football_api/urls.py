@@ -1,5 +1,5 @@
 """
-URL configuration for billing_api project.
+URL configuration for football_api project.
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/5.2/topics/http/urls/
@@ -20,7 +20,5 @@ from django.urls import path, include
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('users.urls')),
-    path('api/', include('catalog.urls')),
-    path('api/', include('invoices.urls')),
-    path('api/basics/', include('basics.urls')),
+    path('api/', include('leagues.urls')),
 ]

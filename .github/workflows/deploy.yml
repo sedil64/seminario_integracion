@@ -71,7 +71,7 @@ jobs:
             set -e
 
             echo '🔐 Fix git safe directory'
-            git config --global --add safe.directory $PROJECT_PATH
+            git config --global --add safe.directory '*'
 
             echo '1. Actualizando código...'
             cd $PROJECT_PATH

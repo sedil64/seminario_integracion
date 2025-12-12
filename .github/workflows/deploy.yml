@@ -82,7 +82,8 @@ jobs:
             source $VENV_PATH/bin/activate
 
             echo '3. Instalando dependencias...'
-            pip install -r django/football_api/requirements.txt
+            cd django/football_api
+            pip install -r requirements.txt
 
             echo '4. Cargando variables de entorno...'
             cd django/football_api

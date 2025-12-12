@@ -64,12 +64,14 @@ jobs:
         env:
           VPS_HOST: ${{ secrets.VPS_HOST }}
           VPS_USER: ${{ secrets.VPS_USERNAME }}
-          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
           PROJECT_PATH: ${{ secrets.PROJECT_PATH }}
           VENV_PATH: ${{ secrets.VENV_PATH }}
         run: |
           ssh $VPS_USER@$VPS_HOST "
             set -e
+
+            echo '🔐 Fix git safe directory'
+            git config --global --add safe.directory $PROJECT_PATH
 
             echo '1. Actualizando código...'
             cd $PROJECT_PATH
@@ -80,17 +82,22 @@ jobs:
             source $VENV_PATH/bin/activate
 
             echo '3. Instalando dependencias...'
-            pip install -r requirements.txt
+            pip install -r django/football_api/requirements.txt
 
-            echo '4. Aplicando migraciones...'
+            echo '4. Cargando variables de entorno...'
+            cd django/football_api
+            set -a && source .env && set +a
+
+            echo '5. Aplicando migraciones...'
             python manage.py migrate --noinput
 
-            echo '5. Colectando archivos estáticos...'
+            echo '6. Colectando archivos estáticos...'
             python manage.py collectstatic --noinput --clear
 
-            echo '6. Reiniciando servicios...'
-            systemctl restart gunicorn || true
-            systemctl restart nginx || true
+            echo '7. Reiniciando servicios...'
+            sudo systemctl restart gunicorn
+            sudo systemctl restart nginx
 
             echo '✅ Despliegue completado'
           "
+
